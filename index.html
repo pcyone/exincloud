@@ -869,7 +869,7 @@
   "properties" : {
     "event" : {
       "type" : "string",
-      "description" : "通知类型。\"confirm\" 商家确认收款;\"reject\" 商家未收到用户转账;\"release\" 买单商家已经放币/卖单商家已转账;\"complete\"  交易已经完成。除了交易已完成外，其他类型通知的请求参数仅有订单号\"id\"",
+      "description" : "通知类型。\"confirm\" 商家确认收款;\"reject\" 商家未收到用户转账（注意reject也可能发生在商家确认收款以后，表示之前的confirm是误操作）;\"release\" 买单商家已经放币/卖单商家已转账;\"complete\"  交易已经完成。除了交易已完成外，其他类型通知的请求参数仅有订单号\"id\"",
       "example" : "complete"
     },
     "data" : {
