@@ -1,12 +1,12 @@
 # ExinCloud
 
-ExinCloud 是 [Exin](https://exin.one) 旗下 OTC 开放平台，通过 ExinCloud API 可以在一天内完成一套功能完整、价格公告、具备优质服务的 OTC 交易平台。
+ExinCloud 是 [Exin](https://exin.one) 旗下 OTC 开放平台，通过 ExinCloud API 可以在一天内完成一套功能完整、价格公道、具备优质服务的 OTC 交易平台。
 
 ## 定价及收费
 
-- ExinCloud 支持数十种加密货币，但是平台商家提供的交易币种只有 USDT，其它币均为使用USDT 通过 [ExinCore](https://github.com/exinone/exincore) 兑换得到
+- ExinCloud 支持数十种加密货币，但是平台商家提供的交易币种只有 USDT，其它币均为使用 USDT 通过 [ExinCore](https://github.com/exinone/exincore) 兑换得到
 - USDT 买入价格比火币 OTC 价格高 1 分，卖出价格比火币价格低 1 分，该部分溢价为商家收入
-- ExinCore 币币兑换精选全球交易所流动性最好的交易对，确保每一种币都是公道的价格，币币兑换手续费由交易所收取，不同交易所收费不同，一般为 0.1%-0.2%，部分币种提供折扣
+- ExinCore 币币兑换精选全球交易所流动性最好的交易对，确保每一种币都是公道的价格。币币兑换手续费由交易所收取，不同交易所收费不同，一般为 0.1%-0.2%，部分币种提供折扣
 - ExinCloud 暂时不向合作伙伴收取额外服务费
 
 ## 优势
