@@ -17,7 +17,8 @@ ExinCloud 是 [Exin](https://exin.one) 旗下 OTC 开放平台，通过 ExinClou
 
 ## 接入
 
-- API 文档
+- [API 文档](http://htmlpreview.github.io/?https://github.com/ExinOne/exincloud/blob/master/index.html)
+- 通过下方联系方式获取 API Key
 
 ## 其它说明
 
