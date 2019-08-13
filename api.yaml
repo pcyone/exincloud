@@ -1,0 +1,1111 @@
+openapi: 3.0.0
+info:
+  title: ExinCloud API 文档
+  version: v1
+  description: 通过该文档可以实现一个功能完整的 OTC 平台。
+paths:
+  /openapi/otc/{symbol}:
+    get:
+      tags: 
+        - OTC
+      summary: 获取数字币的状态（是否可以购买、购买限额等）
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+        - name: symbol
+          in: path
+          description: 数字币的缩写
+          required: true
+          example: 'BTC'
+          schema:
+            type: string
+        - name: timestamp
+          in: query
+          description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+          required: true
+          schema:
+            type: number
+        - name: nonce
+          in: query
+          description: 随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+          required: true
+          schema:
+            type: number
+        - name: sign
+          in: query
+          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: '获取数字币状态成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        description: 交易对的Id，用于下单时确定币种
+                        type: number
+                        example: 19
+                      asset:
+                        properties:
+                          symbol:
+                            type: string
+                            description: 数字币的缩写
+                            example: BTC
+                          name:
+                            type: string
+                            description: 数字币的全称
+                            example: Bitcoin
+                        type: object
+                      buyMax:
+                        description: 允许下单的最大数量
+                        type: number
+                        example: 1
+                      buyMin:
+                        description: 允许下单的最小数量
+                        type: number
+                        example: 0.0005
+                      buyPrice:
+                        description: 购买价格，单位元
+                        type: string
+                        example: '45384.90'
+                      canBuy:
+                        description: 是否允许购买
+                        type: boolean
+                        example: true
+                      pair1: 
+                        type: object
+                        description: 第一交易对的详情，不同币种涉及的交易对数量不同。BTC只涉及一个交易对
+                        properties:
+                          buyPrice: 
+                            description: 购买交易对中前一种币的价格，单位是交易对中后一种币。
+                            type: number
+                            example: 6625
+                          depth:
+                            description: 深度数据
+                            type: object
+                          fee:
+                            description: 交易所收取的手续费比例
+                            type: string
+                            example: '0.0010'
+                          pair:
+                            description: 交易对全称
+                            type: string
+                            example: BTC/USDT
+                          rate:
+                            description: 涨跌幅度
+                            type: string
+                            example: '0.58'
+                          rateFormat:
+                            description: 格式化后的涨跌幅度
+                            type: string
+                            example: '+0.58%'
+                      step:
+                        description: 购买该币需要跨交易对的数量
+                        type: number
+                        example: 1
+                      usdtBuyPrice:
+                        description: 当前USDT购买价格
+                        type: number
+                        example: 6.85
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/otc:
+    get:
+      tags: 
+        - OTC
+      summary: 获取所有支持币种的列表
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+        - name: timestamp
+          in: query
+          description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+          required: true
+          schema:
+            type: number
+        - name: nonce
+          in: query
+          description: 随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+          required: true
+          schema:
+            type: number
+        - name: sign
+          in: query
+          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: '获取数字币状态成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          description: 交易对的Id，用于下单时确定币种
+                          type: number
+                          example: 19
+                        asset:
+                          properties:
+                            symbol:
+                              type: string
+                              description: 数字币的缩写
+                              example: BTC
+                            name:
+                              type: string
+                              description: 数字币的全称
+                              example: Bitcoin
+                          type: object
+                        buyMax:
+                          description: 允许下单的最大数量
+                          type: number
+                          example: 1
+                        buyMin:
+                          description: 允许下单的最小数量
+                          type: number
+                          example: 0.0005
+                        buyPrice:
+                          description: 购买价格，单位元
+                          type: string
+                          example: '45384.90'
+                        canBuy:
+                          description: 是否允许购买
+                          type: boolean
+                          example: true
+                        pair1: 
+                          type: object
+                          description: 第一交易对的详情，不同币种涉及的交易对数量不同。BTC只涉及一个交易对
+                          properties:
+                            buyPrice: 
+                              description: 购买交易对中前一种币的价格，单位是交易对中后一种币。
+                              type: number
+                              example: 6625
+                            depth:
+                              description: 深度数据
+                              type: object
+                            fee:
+                              description: 交易所收取的手续费比例
+                              type: string
+                              example: '0.0010'
+                            pair:
+                              description: 交易对全称
+                              type: string
+                              example: BTC/USDT
+                            rate:
+                              description: 涨跌幅度
+                              type: string
+                              example: '0.58'
+                            rateFormat:
+                              description: 格式化后的涨跌幅度
+                              type: string
+                              example: '+0.58%'
+                        step:
+                          description: 购买该币需要跨交易对的数量
+                          type: number
+                          example: 1
+                        usdtBuyPrice:
+                          description: 当前USDT购买价格
+                          type: number
+                          example: 6.85
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/order/create:
+    post:
+      tags: 
+        - Order
+      summary: 创建订单
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: abtc.one
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: number
+                  description: 交易对的Id，用于确定币种
+                  example: 19
+                amount:
+                  type: string
+                  description: 订单金额，买单单位为CNY，卖单单位为出售的币种。
+                  example: '30'
+                side:
+                  type: string
+                  description: buy或sell。
+                  example: 'buy'
+                account:
+                  type: string
+                  description: 卖单参数，微信/支付宝/银行卡账号
+                  example: 'roay@exin.one'
+                bankName:
+                  type: string
+                  description: 卖单参数，银行名称。如果收款方式是银行转账，则必填
+                  example: '建设银行'
+                bankAddress:
+                  type: string
+                  description: 卖单参数，支行名称，选填。
+                  example: '福田支行'
+                qrcode:
+                  type: string
+                  description: 卖单参数，用户收款二维码链接，选填。
+                  example: 'https://foo.bar/foobar.png'
+                paymentMethod:
+                  type: string
+                  description: 支付/收款类型，alipay/wechatpay/bank
+                  example: alipay
+                userTrueName:
+                  type: string
+                  description: 当前下单用户的真实姓名。用于商家确认转账来源。
+                  example: 赵森
+                userId:
+                  type: string
+                  description: 当前下单用户的唯一标识。对于相同的用户，会优先分配使用过的承兑商。
+                  example: '10923'
+                userWallet:
+                  type: string
+                  description: 买单参数，用户 Mixin Network 钱包的UUID，使用实时结算的方式进行交易时必填。
+                  example: 'a465ffdb-4441-4cb9-8b45-00cf79dfbc46'
+                expireAt:
+                  type: number
+                  description: 订单超时时的时间戳。单位秒。订单超时时间不能大于当前时间+15分钟。
+                  example: 1557230767
+                timestamp:
+                  type: number
+                  description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+                  example: 1557229867
+                nonce:
+                  type: string
+                  description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+                  example: 5239483219
+                sign:
+                  type: string
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+              type: object
+      responses:
+        200:
+          description: '创建成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        description: 用户的唯一标识
+                        type: string
+                        example: '10923'
+                      userTrueName:
+                        description: 用户的真实姓名
+                        type: string
+                        example: 赵森
+                      amount:
+                        description: 向承兑商购买usdt的数量
+                        type: number
+                        example: 4.38
+                      asset:
+                        properties:
+                          symbol:
+                            type: string
+                            description: 数字币的缩写
+                            example: BTC
+                          name:
+                            type: string
+                            description: 数字币的全称
+                            example: Bitcoin
+                          precision:
+                            type: number
+                            description: 卖单时，数字币的建议支付精度，表现为小数点后的位数。
+                            example: 6
+                        type: object
+                      assetAmount:
+                        description: 预估购买该币的数量
+                        type: number
+                        example: 0.0007
+                      assetPrice:
+                        description: 下单时该币的价格，单位元
+                        type: number
+                        example: 45384.9
+                      cnyAmount:
+                        description: 下单的金额
+                        type: number
+                        example: 30
+                      createdAt:
+                        description: 创建时间，unix格式，单位秒
+                        type: number
+                        example: 1557221395
+                      endAt:
+                        description: 订单过期时间，unix格式，单位秒
+                        type: number
+                        example: 1557222295
+                      id:
+                        description: 订单号
+                        type: number
+                        example: 11020
+                      merchant:
+                        properties:
+                          account:
+                            type: string
+                            description: 支付账号
+                            example: 16625109153
+                          address:
+                            type: string
+                            description: 支行名称（仅支付方式为银行卡时才有)
+                            example: 深圳福田支行
+                          name:
+                            type: string
+                            description: 支付方式全称
+                            example: 支付宝
+                          qr:
+                            type: string
+                            description: 扫码支付链接。商家不支持扫码支付时为null
+                            example: https://assets.exincdn.com/card/15913-alipay.jpeg
+                          truename:
+                            type: string
+                            description: 商家姓名
+                            example: 廖梅
+                          type:
+                            type: string
+                            description: 支付类型
+                            example: alipay
+                        type: object
+                      payType:
+                        description: 支付方式
+                        type: string
+                        example: alipay
+                      usdtPrice:
+                        description: 当前usdt购买价格
+                        type: number
+                        example: 6.85
+                      transferWallet:
+                        description: 卖单中，向ExinCloud转币的地址，只有卖单才需要这个字段。
+                        type: string
+                        example: 'dfd9c0eb-6f76-4b96-ae3b-64c1304c8d17'
+                      sellTraceId:
+                        description: 卖单中，向ExinCloud转币时用到的Trace ID。必须以此Trace ID转账，才会被认为是在支付该订单。
+                        type: string
+                        example: '618fd537-86e6-4f02-9981-b623e2e48c2b'
+                      receiveTraceId:
+                        description: 即时结算的买单中，交易成功后，ExinCloud放币时使用的Trace ID。
+                        type: string
+                        example: '5751afb2-ee7e-4f98-83d9-07aedad44173'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/order/detail:
+    get:
+      tags: 
+        - Order
+      summary: 获取订单详情
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: 
+              Accept: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+        - name: orderId
+          in: query
+          description: 订单ID，唯一。
+          required: true
+          schema:
+            type: string
+        - name: timestamp
+          in: query
+          description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+          required: true
+          schema:
+            type: number
+        - name: nonce
+          in: query
+          description: 随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+          required: true
+          schema:
+            type: number
+        - name: sign
+          in: query
+          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: '查询详情成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      amount:
+                        description: 向承兑商购买usdt的数量
+                        type: number
+                        example: 4.38
+                      asset:
+                        properties:
+                          symbol:
+                            type: string
+                            description: 数字币的缩写
+                            example: BTC
+                          name:
+                            type: string
+                            description: 数字币的全称
+                            example: Bitcoin
+                          precision:
+                            type: number
+                            description: 卖单时，数字币的建议支付精度，表现为小数点后的位数。
+                            example: 6
+                        type: object
+                      assetAmount:
+                        description: 预估购买该币的数量
+                        type: number
+                        example: 0.0007
+                      assetPrice:
+                        description: 下单时该币的价格，单位元
+                        type: number
+                        example: 45384.9
+                      cnyAmount:
+                        description: 下单的金额
+                        type: number
+                        example: 30
+                      createdAt:
+                        description: 创建时间，unix格式，单位秒
+                        type: number
+                        example: 1557221395
+                      endAt:
+                        description: 订单过期时间，unix格式，单位秒
+                        type: number
+                        example: 1557222295
+                      id:
+                        description: 订单号
+                        type: number
+                        example: 11020
+                      orderId:
+                        description: 用于展示的订单号
+                        type: number
+                        example: 20190517142327242
+                      merchant:
+                        properties:
+                          account:
+                            type: string
+                            description: 支付账号
+                            example: 16625109153
+                          address:
+                            type: string
+                            description: 支行名称（仅支付方式为银行卡时才有)
+                            example: 深圳福田支行
+                          name:
+                            type: string
+                            description: 支付方式全称
+                            example: 支付宝
+                          qr:
+                            type: string
+                            description: 扫码支付链接。商家不支持扫码支付时为null
+                            example: https://assets.exincdn.com/card/15913-alipay.jpeg
+                          truename:
+                            type: string
+                            description: 商家姓名
+                            example: 廖梅
+                          type:
+                            type: string
+                            description: 支付类型
+                            example: alipay
+                        type: object
+                      payStatus:
+                        description: 用户的支付状态
+                        type: string
+                        example: pending
+                      payType:
+                        description: 支付方式
+                        type: string
+                        example: alipay
+                      price:
+                        description: 当前usdt购买价格
+                        type: number
+                        example: 6.85
+                      sendStatus:
+                        description: 用户购买的币的到账状态
+                        type: string
+                        example: pending
+                      transferWallet:
+                        description: 即时结算的卖单中，向ExinCloud转币的地址，只有卖单才需要这个字段。
+                        type: string
+                        example: 'dfd9c0eb-6f76-4b96-ae3b-64c1304c8d17'
+                      sellTraceId:
+                        description: 即时结算的卖单中，向ExinCloud转币时用到的Trace ID。必须以此Trace ID转账，才会被认为是在支付该订单。
+                        type: string
+                        example: '618fd537-86e6-4f02-9981-b623e2e48c2b'
+                      receiveTraceId:
+                        description: 即时结算的买单中，交易成功后，ExinCloud放币时使用的Trace ID。
+                        type: string
+                        example: '5751afb2-ee7e-4f98-83d9-07aedad44173'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/order/cancel:
+    post:
+      tags: 
+        - Order
+      summary: 取消订单
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                orderId:
+                  type: string
+                  description: 订单ID，唯一。
+                  example: '10232'
+                timestamp:
+                  type: number
+                  description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+                  example: 1557229867
+                nonce:
+                  type: string
+                  description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+                  example: 5239483219
+                sign:
+                  type: string
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+              type: object
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: 
+              Accept: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+      responses:
+        200:
+          description: '取消成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/order/confirm:
+    post:
+      tags: 
+        - Order
+      summary: 买单用户确认已经付款/卖单记账模式下平台确认已经收到币
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                orderId:
+                  type: string
+                  description: 订单ID，唯一。
+                  example: '10232'
+                timestamp:
+                  type: number
+                  description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+                  example: 1557229867
+                nonce:
+                  type: string
+                  description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+                  example: 5239483219
+                sign:
+                  type: string
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+              type: object
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: 
+              Accept: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+      responses:
+        200:
+          description: '确认付款成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      payStatus:
+                        description: 支付状态
+                        type: string
+                        example: confirmed
+                      sendStatus:
+                        description: 用户的支付状态
+                        type: string
+                        example: pending
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/order/user_receive:
+    post:
+      tags: 
+        - Order
+      summary: 卖单用户确认已经收款
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                orderId:
+                  type: string
+                  description: 订单ID，唯一。
+                  example: '10232'
+                timestamp:
+                  type: number
+                  description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+                  example: 1557229867
+                nonce:
+                  type: string
+                  description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+                  example: 5239483219
+                sign:
+                  type: string
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+              type: object
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: 
+              Accept: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+      responses:
+        200:
+          description: '确认付款成功'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      payStatus:
+                        description: 支付状态
+                        type: string
+                        example: success
+                      sendStatus:
+                        description: 用户的支付状态
+                        type: string
+                        example: success
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /openapi/order/merchant/change:
+    post:
+      tags: 
+        - Order
+      summary: 买单切换商家
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                orderId:
+                  type: string
+                  description: 订单ID，唯一。
+                  example: '10232'
+                timestamp:
+                  type: number
+                  description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+                  example: 1557229867
+                nonce:
+                  type: string
+                  description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+                  example: 5239483219
+                sign:
+                  type: string
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+              type: object
+      parameters:
+        - name: Accept
+          in: header
+          description: Api版本
+          required: true
+          schema:
+            type: string
+            example: 
+              Accept: application/prs.exin.openapiv1+json
+        - name: X-App-Refer
+          in: header
+          description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+          required: true
+          schema:
+            type: string
+            example: 
+              X-App-Refer: abtc.one
+      responses:
+        200:
+          description: '切换商家成功，响应与获取订单详情相同'
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      amount:
+                        description: 向承兑商购买usdt的数量
+                        type: number
+                        example: 4.38
+                      asset:
+                        properties:
+                          symbol:
+                            type: string
+                            description: 数字币的缩写
+                            example: BTC
+                          name:
+                            type: string
+                            description: 数字币的全称
+                            example: Bitcoin
+                          precision:
+                            type: number
+                            description: 卖单时，数字币的建议支付精度，表现为小数点后的位数。
+                            example: 6
+                        type: object
+                      assetAmount:
+                        description: 预估购买该币的数量
+                        type: number
+                        example: 0.0007
+                      assetPrice:
+                        description: 下单时该币的价格，单位元
+                        type: number
+                        example: 45384.9
+                      cnyAmount:
+                        description: 下单的金额
+                        type: number
+                        example: 30
+                      createdAt:
+                        description: 创建时间，unix格式，单位秒
+                        type: number
+                        example: 1557221395
+                      endAt:
+                        description: 订单过期时间，unix格式，单位秒
+                        type: number
+                        example: 1557222295
+                      id:
+                        description: 订单号
+                        type: number
+                        example: 11020
+                      orderId:
+                        description: 用于展示的订单号
+                        type: number
+                        example: 20190517142327242
+                      merchant:
+                        properties:
+                          account:
+                            type: string
+                            description: 支付账号
+                            example: 13798320759
+                          address:
+                            type: string
+                            description: 支行名称（仅支付方式为银行卡时才有)
+                            example: 深圳福田支行
+                          name:
+                            type: string
+                            description: 支付方式全称
+                            example: 支付宝
+                          qr:
+                            type: string
+                            description: 扫码支付链接。商家不支持扫码支付时为null
+                            example: https://assets.exincdn.com/card/15913-alipay.jpeg
+                          truename:
+                            type: string
+                            description: 商家姓名
+                            example: 代雪娇
+                          type:
+                            type: string
+                            description: 支付类型
+                            example: alipay
+                        type: object
+                      payStatus:
+                        description: 用户的支付状态
+                        type: string
+                        example: pending
+                      payType:
+                        description: 支付方式
+                        type: string
+                        example: alipay
+                      price:
+                        description: 当前usdt购买价格
+                        type: number
+                        example: 6.85
+                      sendStatus:
+                        description: 用户购买的币的到账状态
+                        type: string
+                        example: pending
+                      transferWallet:
+                        description: 即时结算的卖单中，向ExinCloud转币的地址，只有卖单才需要这个字段。
+                        type: string
+                        example: 'dfd9c0eb-6f76-4b96-ae3b-64c1304c8d17'
+                      sellTraceId:
+                        description: 即时结算的卖单中，向ExinCloud转币时用到的Trace ID。必须以此Trace ID转账，才会被认为是在支付该订单。
+                        type: string
+                        example: '618fd537-86e6-4f02-9981-b623e2e48c2b'
+                      receiveTraceId:
+                        description: 即时结算的买单中，交易成功后，ExinCloud放币时使用的Trace ID。
+                        type: string
+                        example: '5751afb2-ee7e-4f98-83d9-07aedad44173'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+                type: object
+  /exinone/callback:
+    post:
+      tags: 
+        - Client
+      summary: 交易状态改变的通知
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: string
+                  description: 通知类型。"confirm" 商家确认收款;"reject" 商家未收到用户转账（注意reject也可能发生在商家确认收款以后，表示之前的confirm是误操作）;"release" 买单商家已经放币/卖单商家已转账;"complete"  交易已经完成。除了交易已完成外，其他类型通知的请求参数仅有订单号"id"
+                  example: complete
+                data:
+                  type: object
+                  properties:
+                    amount:
+                      description: 向承兑商购买usdt的数量
+                      type: number
+                      example: 4.38
+                    asset:
+                      properties:
+                        symbol:
+                          type: string
+                          description: 数字币的缩写
+                          example: BTC
+                        name:
+                          type: string
+                          description: 数字币的全称
+                          example: Bitcoin
+                      type: object
+                    assetAmount:
+                      description: 预估购买该币的数量
+                      type: number
+                      example: 0.0007
+                    assetPrice:
+                      description: 下单时该币的价格，单位元
+                      type: number
+                      example: 45384.9
+                    cnyAmount:
+                      description: 下单的金额
+                      type: number
+                      example: 30
+                    createdAt:
+                      description: 创建时间，unix格式，单位秒
+                      type: number
+                      example: 1557221395
+                    endAt:
+                      description: 订单过期时间，unix格式，单位秒
+                      type: number
+                      example: 1557222295
+                    id:
+                      description: 订单号
+                      type: number
+                      example: 11020
+                    merchant:
+                      properties:
+                        account:
+                          type: string
+                          description: 支付账号
+                          example: 16625109153
+                        address:
+                          type: string
+                          description: 支行名称（仅支付方式为银行卡时才有)
+                          example: 深圳福田支行
+                        name:
+                          type: string
+                          description: 支付方式全称
+                          example: 支付宝
+                        qr:
+                          type: string
+                          description: 扫码支付链接。商家不支持扫码支付时为null
+                          example: https://assets.exincdn.com/card/15913-alipay.jpeg
+                        truename:
+                          type: string
+                          description: 商家姓名
+                          example: 廖梅
+                        type:
+                          type: string
+                          description: 支付类型
+                          example: alipay
+                      type: object
+                    payStatus:
+                      description: 用户的支付状态
+                      type: string
+                      example: success
+                    payType:
+                      description: 支付方式
+                      type: string
+                      example: alipay
+                    price:
+                      description: 当前usdt购买价格
+                      type: number
+                      example: 6.85
+                    sendStatus:
+                      description: 用户购买的币的到账状态
+                      type: string
+                      example: success
+      responses:
+        200:
+          description: 'wait to add'
+tags:
+  - name: OTC
+    description: ExinOne 开放的OTC状态接口
+  - name: Order
+    description: ExinOne 开放的订单接口
+  - name: Client
+    description: ExinOne 发送通知
