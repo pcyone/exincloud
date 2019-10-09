@@ -24,7 +24,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
         - name: symbol
           in: path
           description: 数字币的缩写
@@ -155,7 +155,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
         - name: timestamp
           in: query
           description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
@@ -477,7 +477,7 @@ paths:
           schema:
             type: string
             example: 
-              Accept: application/prs.exin.openapiv1+json
+              application/prs.exin.openapiv1+json
         - name: X-App-Refer
           in: header
           description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
@@ -485,7 +485,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
         - name: orderId
           in: query
           description: 订单ID，唯一。
@@ -666,7 +666,7 @@ paths:
           schema:
             type: string
             example: 
-              Accept: application/prs.exin.openapiv1+json
+              application/prs.exin.openapiv1+json
         - name: X-App-Refer
           in: header
           description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
@@ -674,7 +674,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
       responses:
         200:
           description: '取消成功'
@@ -726,7 +726,7 @@ paths:
           schema:
             type: string
             example: 
-              Accept: application/prs.exin.openapiv1+json
+              application/prs.exin.openapiv1+json
         - name: X-App-Refer
           in: header
           description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
@@ -734,7 +734,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
       responses:
         200:
           description: '确认付款成功'
@@ -797,7 +797,7 @@ paths:
           schema:
             type: string
             example: 
-              Accept: application/prs.exin.openapiv1+json
+              application/prs.exin.openapiv1+json
         - name: X-App-Refer
           in: header
           description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
@@ -805,7 +805,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
       responses:
         200:
           description: '确认付款成功'
@@ -868,7 +868,7 @@ paths:
           schema:
             type: string
             example: 
-              Accept: application/prs.exin.openapiv1+json
+              application/prs.exin.openapiv1+json
         - name: X-App-Refer
           in: header
           description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
@@ -876,7 +876,7 @@ paths:
           schema:
             type: string
             example: 
-              X-App-Refer: abtc.one
+              abtc.one
       responses:
         200:
           description: '切换商家成功，响应与获取订单详情相同'
