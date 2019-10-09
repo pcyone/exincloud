@@ -46,7 +46,7 @@ paths:
             type: number
         - name: sign
           in: query
-          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
           required: true
           schema:
             type: string
@@ -170,7 +170,7 @@ paths:
             type: number
         - name: sign
           in: query
-          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
           required: true
           schema:
             type: string
@@ -345,7 +345,7 @@ paths:
                   example: 5239483219
                 sign:
                   type: string
-                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
               type: object
       responses:
         200:
@@ -506,7 +506,7 @@ paths:
             type: number
         - name: sign
           in: query
-          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+          description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
           required: true
           schema:
             type: string
@@ -656,7 +656,7 @@ paths:
                   example: 5239483219
                 sign:
                   type: string
-                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
               type: object
       parameters:
         - name: Accept
@@ -716,7 +716,7 @@ paths:
                   example: 5239483219
                 sign:
                   type: string
-                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
               type: object
       parameters:
         - name: Accept
@@ -787,7 +787,7 @@ paths:
                   example: 5239483219
                 sign:
                   type: string
-                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
               type: object
       parameters:
         - name: Accept
@@ -858,7 +858,7 @@ paths:
                   example: 5239483219
                 sign:
                   type: string
-                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名。
+                  description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
               type: object
       parameters:
         - name: Accept
