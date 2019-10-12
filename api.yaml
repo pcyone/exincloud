@@ -699,7 +699,7 @@ paths:
                   $ref: '#/components/schemas/OrderResponse'
       responses:
         200:
-          description: 'wait to add'
+          description: '通知的响应只要是成功即可'
 tags:
   - name: C2C
     description: ExinOne 开放的 C2C 状态接口
