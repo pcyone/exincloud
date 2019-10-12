@@ -41,7 +41,7 @@ ExinCloud 是 [Exin](https://exin.one) 旗下 OTC 开放平台，通过 ExinClou
   </a>
   &nbsp;
   <a target="_blank" href="https://coinmydex.com">
-    <img src="./logos/CoinMyDEX.png" height="80">
+    <img src="./logos/CMX.png" height="80">
   </a>
   &nbsp;
   <a target="_blank" href="https://abtc.one">
