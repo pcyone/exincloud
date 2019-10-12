@@ -2,16 +2,17 @@ openapi: 3.0.0
 info:
   title: ExinCloud API 文档
   version: v1.1
-  description: 通过该文档可以实现一个功能完整的 C2C 平台。
+  description: ExinCloud 帮助您实现一个功能完整的 C2C 平台。<br/>点击文档中的 Schema 可以查看每个字段的详细说明。<br/>测试前请联系我们以获取密钥，目前支持 "记账" 和 "实时结算" 两种模式接入，接入模式需要提前确定并无法更改。
 components:
   parameters:
     Sign:
       name: sign
       in: query
-      description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
+      description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的密钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
       required: true
       schema:
         type: string
+        example: P7GnT4FqvbmQNLzq+zAlgGywbX8=
     Accept:
       name: Accept
       in: header
@@ -27,8 +28,7 @@ components:
       required: true
       schema:
         type: string
-        example: 
-          abtc.one
+        example: abtc.one
     Timestamp:
       name: timestamp
       in: query
@@ -36,17 +36,21 @@ components:
       required: true
       schema:
         type: number
+        example: 
+          1557229867
     Nonce:
       name: nonce
       in: query
-      description: 随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+      description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
       required: true
       schema:
         type: number
+        example: 
+          5239483219
   schemas:
     Sign:
       type: string
-      description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的私钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
+      description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的密钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
     Timestamp:
       type: number
       description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
@@ -123,11 +127,11 @@ components:
               example: 支付宝
             qr:
               type: string
-              description: 扫码支付链接。商家不支持扫码支付时为null
+              description: 扫码支付链接。承兑商不支持扫码支付时为null
               example: https://assets.exincdn.com/card/15913-alipay.jpeg
             truename:
               type: string
-              description: 商家姓名
+              description: 承兑商姓名
               example: 廖梅
             type:
               type: string
@@ -392,19 +396,19 @@ paths:
                   example: 'buy'
                 account:
                   type: string
-                  description: 卖单参数，微信/支付宝/银行卡账号
+                  description: 卖单独有参数，微信/支付宝/银行卡账号
                   example: 'roay@exin.one'
                 bankName:
                   type: string
-                  description: 卖单参数，银行名称。如果收款方式是银行转账，则必填
+                  description: 卖单独有参数，银行名称。如果收款方式是银行转账，则必填
                   example: '建设银行'
                 bankAddress:
                   type: string
-                  description: 卖单参数，支行名称，选填。
+                  description: 卖单独有参数，支行名称，选填。
                   example: '福田支行'
                 qrcode:
                   type: string
-                  description: 卖单参数，用户收款二维码链接，选填。
+                  description: 卖单独有参数，用户收款二维码链接，选填。
                   example: 'https://foo.bar/foobar.png'
                 paymentMethod:
                   type: string
@@ -412,7 +416,7 @@ paths:
                   example: alipay
                 userTrueName:
                   type: string
-                  description: 当前下单用户的真实姓名。用于商家确认转账来源。
+                  description: 当前下单用户的真实姓名。用于承兑商确认转账来源。如果是未实名用户，应为 "未实名"
                   example: 赵森
                 userId:
                   type: string
@@ -420,7 +424,7 @@ paths:
                   example: '10923'
                 userWallet:
                   type: string
-                  description: 买单参数，用户 Mixin Network 钱包的UUID，使用实时结算的方式进行交易时必填。
+                  description: 买单独有参数，用户 Mixin Network 钱包的 UUID，使用实时结算的方式进行交易时必填。
                   example: 'a465ffdb-4441-4cb9-8b45-00cf79dfbc46'
                 expireAt:
                   type: number
@@ -463,6 +467,7 @@ paths:
           in: query
           description: 订单ID，唯一。
           required: true
+          example: '10232'
           schema:
             type: string
         - $ref: '#/components/parameters/Timestamp'
@@ -531,7 +536,7 @@ paths:
     post:
       tags: 
         - Order
-      summary: 买单用户确认已经付款/卖单记账模式下平台确认已经收到币
+      summary: 买单用户确认已经付款/卖单平台确认已经收到币。
       requestBody:
         required: true
         content:
@@ -583,7 +588,7 @@ paths:
     post:
       tags: 
         - Order
-      summary: 卖单用户确认已经收款
+      summary: 卖单用户确认已经收到承兑商的放宽
       requestBody:
         required: true
         content:
@@ -635,7 +640,7 @@ paths:
     post:
       tags: 
         - Order
-      summary: 买单切换商家
+      summary: 买单切换承兑商
       requestBody:
         required: true
         content:
@@ -658,7 +663,7 @@ paths:
         - $ref: '#/components/parameters/Refer'
       responses:
         200:
-          description: '切换商家成功'
+          description: '切换承兑商成功'
           content:
             application/json:
               schema:
@@ -688,7 +693,7 @@ paths:
               properties:
                 event:
                   type: string
-                  description: 通知类型。"confirm" 商家确认收款;"reject" 商家未收到用户转账（注意reject也可能发生在商家确认收款以后，表示之前的confirm是误操作）;"release" 买单商家已经放币/卖单商家已转账;"complete"  交易已经完成。除了交易已完成外，其他类型通知的请求参数仅有订单号"id"
+                  description: 通知类型。<br/>"confirm" 商家确认收款;<br/>"reject" 商家未收到用户转账（注意reject也可能发生在商家确认收款以后，表示之前的confirm是误操作）;<br/>"release" 买单商家已经放币/卖单商家已转账;<br/>"complete"  交易已经完成。<br/>除了交易已完成外，其他类型通知的请求参数仅有订单号"id"
                   example: complete
                 data:
                   $ref: '#/components/schemas/OrderResponse'
@@ -701,4 +706,4 @@ tags:
   - name: Order
     description: ExinOne 开放的订单接口
   - name: Client
-    description: ExinOne 发送通知
+    description: ExinOne 发送通知到预留的 URL
