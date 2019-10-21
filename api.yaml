@@ -84,15 +84,15 @@ components:
         asset:
           $ref: '#/components/schemas/Asset'
         assetAmount:
-          description: 预估购买该币的数量
+          description: 买单成交前代表预估购买该币的数量，成交后代表实际的成交数量；卖单代表支付的数字币数量；
           type: number
           example: 0.0007
         assetPrice:
-          description: 下单时该币的价格，单位元
+          description: 成交前代表下单时该币的价格，成交后代表实际的成交价格，单位元
           type: number
           example: 45384.9
         cnyAmount:
-          description: 下单的金额
+          description: 买单代表用户支付的金额；卖单成交前代表预估的到账金额，成交后代表实际的到账金额
           type: number
           example: 30
         createdAt:
