@@ -139,7 +139,7 @@ components:
               example: alipay
           type: object
         payStatus:
-          description: 用户的支付状态
+          description: 用户的支付状态。<br/>pending 等待支付 <br/>confirmed 买单用户确认已付款/卖单不存在该状态 <br/>success 买单承兑商确认已收款/卖单合作方确认已收到用户的币 <br/>cancel 订单已取消
           type: string
           example: pending
         payType:
@@ -151,7 +151,7 @@ components:
           type: number
           example: 6.85
         sendStatus:
-          description: 用户购买的币的到账状态
+          description: 买单用户购买到的币转账状态/卖单用户出售所得款的转账状态。<br/>pending/waiting 未开始转账流程 <br/>trading 交易中<br/>sending 向用户发送转账中 <br/>confirmed 买单不存在该状态/卖单承兑商已向用户转账，待用户确认 <br/>success 转账成功 <br/>fail 交易或转账过程发生错误，需要人工介入处理 <br/>cancel 订单已取消
           type: string
           example: pending
         transferWallet:
@@ -475,7 +475,7 @@ paths:
         - $ref: '#/components/parameters/Sign'
       responses:
         200:
-          description: '查询详情成功'
+          description: 查询详情成功。
           content:
             application/json:
               schema:
