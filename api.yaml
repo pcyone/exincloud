@@ -135,7 +135,7 @@ components:
               example: 廖梅
             type:
               type: string
-              description: 支付类型
+              description: 支付类型，alipay/wechatpay/bank
               example: alipay
           type: object
         payStatus:
@@ -143,7 +143,7 @@ components:
           type: string
           example: pending
         payType:
-          description: 支付方式
+          description: 支付/收款类型，alipay/wechatpay/bank
           type: string
           example: alipay
         price:
@@ -166,6 +166,38 @@ components:
           description: 即时结算的买单中，交易成功后，ExinCloud放币时使用的Trace ID。
           type: string
           example: '5751afb2-ee7e-4f98-83d9-07aedad44173'
+        userWallet:
+          type: string
+          description: 即时结算的买单中，用户 Mixin Network 钱包的 UUID。
+          example: 'a465ffdb-4441-4cb9-8b45-00cf79dfbc46'
+        userId:
+          description: 用户的唯一标识
+          type: string
+          example: '10923'
+        userTrueName:
+          description: 用户的真实姓名。未实名用户该字段值为"未实名"
+          type: string
+          example: '赵森'
+        userSide:
+          type: string
+          description: buy或sell。
+          example: 'buy'
+        account:
+          type: string
+          description: 卖单独有参数，微信/支付宝/银行卡账号
+          example: 'roay@exin.one'
+        bankName:
+          type: string
+          description: 卖单独有参数，银行名称。
+          example: '建设银行'
+        bankAddress:
+          type: string
+          description: 卖单独有参数，支行名称。
+          example: '福田支行'
+        qrcode:
+          type: string
+          description: 卖单独有参数，用户收款二维码链接。
+          example: 'https://foo.bar/foobar.png'
 paths:
   /openapi/otc/{symbol}:
     get:
