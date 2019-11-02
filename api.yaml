@@ -444,7 +444,7 @@ paths:
                   example: 'https://foo.bar/foobar.png'
                 paymentMethod:
                   type: string
-                  description: 支付/收款类型，alipay/wechatpay/bank
+                  description: 支付/收款类型，alipay/wechatpay/bank。注意如果选择的支付方式没有承兑商在线，则会创建失败并报错误码 1041。
                   example: alipay
                 userTrueName:
                   type: string
