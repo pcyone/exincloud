@@ -1,0 +1,480 @@
+openapi: 3.0.0
+info:
+  title: ExinCloud 闪兑 API 文档
+  version: v0.1
+  description: 使用 ExinCloud 闪兑可以简单高效地兑换数字币。<br/>点击文档中的 Schema 可以查看每个字段的详细说明。<br/>测试前请联系我们以获取密钥。
+components:
+  parameters:
+    Sign:
+      name: sign
+      in: query
+      description: 签名，注意一些特殊字符在URI中需要转义。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的密钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
+      required: true
+      schema:
+        type: string
+        example: P7GnT4FqvbmQNLzq+zAlgGywbX8=
+    Accept:
+      name: Accept
+      in: header
+      description: Api版本，固定为 application/prs.exin.openapiv1+json
+      required: true
+      schema:
+        type: string
+        example: application/prs.exin.openapiv1+json
+    Refer:
+      name: X-App-Refer
+      in: header
+      description: 约定的字符串，表示来源。服务端会根据来源来验证签名。
+      required: true
+      schema:
+        type: string
+        example: tokenPocket
+    Timestamp:
+      name: timestamp
+      in: query
+      description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+      required: true
+      schema:
+        type: number
+        example: 
+          1557229867
+    Nonce:
+      name: nonce
+      in: query
+      description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+      required: true
+      schema:
+        type: number
+        example: 
+          5239483219
+  schemas:
+    Sign:
+      type: string
+      description: 签名。签名流程： 1. 将参数按照名称按自然顺序进行排序； 2. 将排好序的参数按照 "key1=value1&key2=value2&..."组合成字符串; 3. 利用约定的密钥，使用 HMAC-SHA1 算法对以上字符串进行签名，并转为 Base64 格式。
+    Timestamp:
+      type: number
+      description: 生成签名时的时间戳，单位秒。如果与当前时间相差过大，会引起签名过期错误。
+      example: 1557229867
+    Nonce:
+      type: string
+      description: 10位随机正整数，与 timestamp 联合起来，用于防止重放攻击。
+      example: 5239483219
+    MainnetAsset:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 该资产所属主网的数字币ID
+          example: 12
+        symbol:
+          type: string
+          description: 该资产所属主网的数字币缩写
+          example: ETH
+        name:
+          type: string
+          description: 该资产所属主网的数字币全称
+          example: Ethereum
+    Asset:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 数字币的ID
+          example: 12
+        symbol:
+          type: string
+          description: 数字币的缩写
+          example: ETH
+        name:
+          type: string
+          description: 数字币的全称
+          example: Ethereum
+        mainnetAsset:
+          $ref: '#/components/schemas/MainnetAsset'
+        precision:
+          type: number
+          description: 数字币的建议支付精度，表现为小数点后的位数。
+          example: 6
+        contract:
+          type: string
+          nullable: true
+          description: 数字币合约地址或名称
+          example: null
+    AnotherAsset:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 数字币的ID
+          example: 8
+        symbol:
+          type: string
+          description: 数字币的缩写
+          example: USDT
+        name:
+          type: string
+          description: 数字币的全称
+          example: Tether USD
+        mainnetAsset:
+          $ref: '#/components/schemas/MainnetAsset'
+        precision:
+          type: number
+          description: 数字币的建议支付精度，表现为小数点后的位数。
+          example: 6
+        contract:
+          type: string
+          nullable: true
+          description: 数字币合约地址或名称
+          example: eosio.token
+    OrderResponse:
+      type: object
+      properties:
+        id:
+          description: 订单id
+          type: integer
+          example: 1522
+        payAmount:
+          description: 支付的数字币数量
+          type: string
+          example: '1.3252'
+        tradeAmount:
+          description: 在交易所中交易所得的数量
+          type: string
+          example: '185.77'
+        receiveAmount:
+          description: 扣除转账手续费与服务费后，用户实际到账的数量
+          type: string
+          example: '184.25'
+        transferFeeAmount:
+          description: 发送转账时，支付的手续费数量
+          type: string
+          example: '0.32'
+        serviceFeeAmount:
+          description: ExinCloud 扣除的服务费数量
+          type: string
+          example: '0.1858'
+        serviceFeeRate:
+          description: ExinCloud 扣除的服务费比例
+          type: string
+          example: '0.001'
+        exchangeFeeAmount:
+          description: 交易所收取的手续费数量
+          type: string
+          example: '0.381'
+        exchangeFeeRate:
+          description: 交易所收取手续费的比例
+          type: string
+          example: '0.002'
+        refundAmount:
+          description: 扣除转账手续费后，退币的数量。交易成功的订单该字段为 0。
+          type: string
+          example: '0'
+        status:
+          description: 订单状态。 <br/> pending 等待支付; <br/> trading 交易中; <br/> sending 交易成功，转账中; <br/> success 交易成功; <br/> refunding 交易失败，退币中; <br/> fail 交易失败；<br/> cancel 交易取消
+          type: string
+          example: 'success'
+        payAddr:
+          description: 等待用户转账的地址
+          type: string
+          example: 'eoswithmixin'
+        payMemo:
+          description: 等待用户转账的 Memo。注意如果存在 Memo，则 Memo 必须正确填写，否则无法到账也无法退币。
+          type: string
+          nullable: true
+          example: '8795f288-578c-434e-8528-1941bed2d61a'
+        receiveTxid:
+          description: 发送交易结果时，链上转账对应的哈希值。发送成功后该字段才会有值。
+          type: string
+          nullable: true
+          example: '0x13cc342ee949f5d35e73a95732759af3e6ab73dae3ce351865febd3e74ea7e15'
+        refundTxid:
+          description: 交易因各种原因失败发生退币时，链上转账对应的哈希值。交易成功的订单该字段为空。
+          type: string
+          nullable: true
+          example: null
+        payAsset:
+          $ref: '#/components/schemas/Asset'
+        receiveAsset:
+          $ref: '#/components/schemas/AnotherAsset'
+        
+paths:
+  /openapi/exchange/asset/list:
+    get:
+      tags: 
+        - Asset
+      summary: 获取支持的数字币列表
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Refer'
+        - $ref: '#/components/parameters/Timestamp'
+        - $ref: '#/components/parameters/Nonce'
+        - $ref: '#/components/parameters/Sign'
+      responses:
+        200:
+          description: '获取数字币列表成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Asset'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+  /openapi/exchange/asset/detail:
+    get:
+      tags: 
+        - Asset
+      summary: 获取闪兑详情
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Refer'
+        - name: payAssetId
+          in: query
+          description: 支付的数字币id
+          required: true
+          example: 12
+          schema:
+            type: integer
+        - name: receiveAssetId
+          in: query
+          description: 想要兑换的数字币id
+          required: true
+          example: 8
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/Timestamp'
+        - $ref: '#/components/parameters/Nonce'
+        - $ref: '#/components/parameters/Sign'
+      responses:
+        200:
+          description: '获取闪兑详情成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      payAsset:
+                        $ref: '#/components/schemas/Asset'
+                      receiveAsset:
+                        $ref: '#/components/schemas/AnotherAsset'
+                      payMin:
+                        description: 允许下单的最小数量
+                        type: string
+                        example: '0.001'
+                      payMax:
+                        description: 允许下单的最大数量
+                        type: string
+                        example: '300'
+                      price:
+                        description: 当前兑换价格
+                        type: string
+                        example: '185.22'
+                      serviceFeeRate:
+                        description: 服务费比率，将从到账中扣除
+                        type: string
+                        example: '0.001'
+                      exchangeFeeRate:
+                        description: 交易所手续费比率，将从到账中扣除
+                        type: string
+                        example: '0.002'
+                      transferFee:
+                        description: 转账手续费，单位是 receiveAsset，将从到账中扣除
+                        type: string
+                        example: '0.1362'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+  /openapi/exchange/order/create:
+    post:
+      tags: 
+        - Order
+      summary: 创建闪兑订单
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Refer'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                payAssetId:
+                  type: number
+                  description: 支付的数字币ID
+                  example: 12
+                receiveAssetId:
+                  type: number
+                  description: 要兑换的数字币ID
+                  example: 8
+                payAmount:
+                  type: string
+                  description: 支付的数字币数量
+                  example: '1.55'
+                receiveAddr:
+                  type: string
+                  description: 收币地址，用于发送交易结果
+                  example: '0xba62c6d7817523f588d41ade27dc689f0ffaf2e2db228adca99099d482db4a34'
+                receiveMemo:
+                  type: string
+                  description: 收币时的转账 Memo，用于部分需要指定 Memo 才能到账的币
+                  example: 'duxoprminwq'
+                timestamp:
+                  $ref: '#/components/schemas/Timestamp'
+                nonce:
+                  $ref: '#/components/schemas/Nonce'
+                sign:
+                  $ref: '#/components/schemas/Sign'
+              type: object
+      responses:
+        200:
+          description: '创建成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/OrderResponse'
+                      - type: object
+                        properties:
+                          status:
+                            example: 'pending'
+                          receiveTxid:
+                            example: null
+                          refundTxid:
+                            example: null
+                          receiveAmount:
+                            example: '0'
+                          transferFeeAmount:
+                            example: '0'
+                          serviceFeeAmount:
+                            example: '0'
+                          exchangeFeeAmount:
+                            example: '0'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+  /openapi/exchange/order/detail:
+    get:
+      tags: 
+        - Order
+      summary: 获取订单详情
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Refer'
+        - name: id
+          in: query
+          description: 订单id
+          required: true
+          example: 1522
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/Timestamp'
+        - $ref: '#/components/parameters/Nonce'
+        - $ref: '#/components/parameters/Sign'
+      responses:
+        200:
+          description: '获取订单详情成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    $ref: '#/components/schemas/OrderResponse'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+  /openapi/exchange/order/cancel:
+    post:
+      tags: 
+        - Order
+      summary: 取消闪兑订单。只有未支付的订单可以取消
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Refer'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                id:
+                  type: integer
+                  description: 待取消的订单id
+                  example: 1522
+                timestamp:
+                  $ref: '#/components/schemas/Timestamp'
+                nonce:
+                  $ref: '#/components/schemas/Nonce'
+                sign:
+                  $ref: '#/components/schemas/Sign'
+              type: object
+      responses:
+        200:
+          description: '取消成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    allOf:
+                      - $ref: '#/components/schemas/OrderResponse'
+                      - type: object
+                        properties:
+                          status:
+                            example: 'cancel'
+                          receiveTxid:
+                            example: null
+                          refundTxid:
+                            example: null
+                          receiveAmount:
+                            example: '0'
+                          transferFeeAmount:
+                            example: '0'
+                          serviceFeeAmount:
+                            example: '0'
+                          exchangeFeeAmount:
+                            example: '0'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+tags:
+  - name: Asset
+    description: 数字币相关接口
+  - name: Order
+    description: 闪兑订单相关接口
