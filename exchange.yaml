@@ -94,7 +94,7 @@ components:
         precision:
           type: number
           description: 数字币的建议支付精度，表现为小数点后的位数。
-          example: 6
+          example: 4
         contract:
           type: string
           nullable: true
@@ -120,7 +120,7 @@ components:
         precision:
           type: number
           description: 数字币的建议支付精度，表现为小数点后的位数。
-          example: 6
+          example: 4
         contract:
           type: string
           nullable: true
@@ -141,6 +141,10 @@ components:
           description: 在交易所中交易所得的数量
           type: string
           example: '185.77'
+        tradePrice:
+          description: 在交易所中交易的价格，其中包含了交易所手续费
+          type: string
+          example: '186.1772'
         receiveAmount:
           description: 扣除转账手续费与服务费后，用户实际到账的数量
           type: string
@@ -297,6 +301,70 @@ paths:
                         description: 转账手续费，单位是 receiveAsset，将从到账中扣除
                         type: string
                         example: '0.1362'
+                  success:
+                    description: 是否成功
+                    type: boolean
+                    example: true
+  /openapi/exchange/asset/price/calc:
+    post:
+      tags: 
+        - Asset
+      summary: 计算闪兑预期到账数量
+      parameters:
+        - $ref: '#/components/parameters/Accept'
+        - $ref: '#/components/parameters/Refer'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                payAssetId:
+                  type: number
+                  description: 支付的数字币ID
+                  example: 12
+                receiveAssetId:
+                  type: number
+                  description: 要兑换的数字币ID
+                  example: 8
+                payAmount:
+                  type: string
+                  description: 支付的数字币数量
+                  example: '1.0731'
+                timestamp:
+                  $ref: '#/components/schemas/Timestamp'
+                nonce:
+                  $ref: '#/components/schemas/Nonce'
+                sign:
+                  $ref: '#/components/schemas/Sign'
+              type: object
+      responses:
+        200:
+          description: '获取预期到账数量成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    description: 状态码
+                    type: number
+                    example: 0
+                  data:
+                    type: object
+                    properties:
+                      receiveAmount:
+                        type: string
+                        description: 预期到账的数量
+                        example: '172.33'
+                      payAmount:
+                        type: string
+                        description: 支付的数量
+                        example: '1.0731'
+                      payAsset:
+                        $ref: '#/components/schemas/Asset'
+                      receiveAsset:
+                        $ref: '#/components/schemas/AnotherAsset'
                   success:
                     description: 是否成功
                     type: boolean
