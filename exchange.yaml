@@ -174,7 +174,7 @@ components:
           type: string
           example: '0'
         status:
-          description: 订单状态。 <br/> pending 等待支付; <br/> trading 交易中; <br/> sending 交易成功，转账中; <br/> success 交易成功; <br/> refunding 交易失败，退币中; <br/> fail 交易失败；<br/> cancel 交易取消
+          description: 订单状态。 <br/> pending 等待支付; <br/> trading 交易中; <br/> sending 发送交易结果中; <br/> success 交易结束; <br/> cancel 交易取消; <br/> fail 发生错误
           type: string
           example: 'success'
         payAddr:
